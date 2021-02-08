@@ -14,15 +14,6 @@ var tests = []struct {
 	Expected  interface{}
 	Variables map[string]interface{}
 }{
-	// {
-	// 	Schema: TodoSchema,
-	// 	Query:  `query{todoList{id,text,done}}`,
-	// 	Expected: &graphql.Result{
-	// 		Data: map[string]interface{}{
-	// 			"todoList": []interface{}{},
-	// 		},
-	// 	},
-	// },
 	{
 		Query: `query{oracle{price,block}}`,
 		Expected: &graphql.Result{
@@ -37,7 +28,7 @@ func TestQL(t *testing.T) {
 	defer lis.Close()
 
 	for _, test := range tests {
-		schema, err := SchemaWithOpts(WithURL(lis.Addr().String()))
+		schema, err := SchemaWithOpts(WithURL("http://" + lis.Addr().String()))
 		if err != nil {
 			t.Fatal(err)
 		}

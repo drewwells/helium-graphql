@@ -22,7 +22,7 @@ func NewServer(t *testing.T) (*http.ServeMux, net.Listener) {
 		mux.HandleFunc(p, h)
 	}
 
-	lis, err := net.Listen("tcp", ":0")
+	lis, err := net.Listen("tcp4", ":0")
 	if err != nil {
 		log.Fatal(err)
 	}
