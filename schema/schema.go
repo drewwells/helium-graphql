@@ -3,6 +3,7 @@ package schema
 import (
 	"fmt"
 	"math/rand"
+	"time"
 
 	"github.com/drewwells/helium-graphql/typs"
 	"github.com/graphql-go/graphql"
@@ -62,7 +63,8 @@ func WithURL(hostport string) func(c *Config) error {
 }
 
 type Config struct {
-	rootURL string
+	APITimeout time.Duration
+	rootURL    string
 }
 
 func (c *Config) Endpoint(s string) string {
@@ -72,7 +74,8 @@ func (c *Config) Endpoint(s string) string {
 func SchemaWithOpts(fns ...OptFn) (graphql.Schema, error) {
 	empty := graphql.Schema{}
 	c := &Config{
-		rootURL: typs.Root,
+		rootURL:    typs.Root,
+		APITimeout: time.Duration(5 * time.Second),
 	}
 	for _, fn := range fns {
 		if err := fn(c); err != nil {
@@ -80,7 +83,8 @@ func SchemaWithOpts(fns ...OptFn) (graphql.Schema, error) {
 		}
 	}
 
-	rootQuery.AddFieldConfig("oracle", c.OracleField())
+	rootQuery.AddFieldConfig("oracle", OracleField(c))
+	rootQuery.AddFieldConfig("stats", StatsField(c))
 
 	return graphql.NewSchema(graphql.SchemaConfig{
 		Query: rootQuery,

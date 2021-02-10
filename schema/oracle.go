@@ -17,7 +17,7 @@ type Oracle struct {
 	Block     int        `json:"block"`
 }
 
-func (c *Config) OracleField() *graphql.Field {
+func OracleField(c *Config) *graphql.Field {
 	return &graphql.Field{
 		Type:        oracleType,
 		Description: "Oracle Price",
@@ -40,13 +40,9 @@ var oracleType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-var root = typs.Root
-
-var timeout = time.Duration(5 * time.Second)
-
 func resolveOracle(c *Config) func(p graphql.ResolveParams) (interface{}, error) {
 	return func(p graphql.ResolveParams) (interface{}, error) {
-		ctx, cancel := context.WithTimeout(context.TODO(), timeout)
+		ctx, cancel := context.WithTimeout(context.TODO(), c.APITimeout)
 		defer cancel()
 
 		req, err := http.NewRequestWithContext(ctx, "GET", c.Endpoint(typs.OracleURL), nil)

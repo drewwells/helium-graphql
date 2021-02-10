@@ -20,6 +20,13 @@ var tests = []struct {
 			Data: map[string]interface{}{"oracle": map[string]interface{}{"block": 42, "price": 42}},
 		},
 	},
+	{
+		Query: `query{stats{token_supply}}`,
+		Expected: &graphql.Result{
+			Data: map[string]interface{}{
+				"stats": map[string]interface{}{"token_supply": 66042860.58752121}},
+		},
+	},
 }
 
 func TestQL(t *testing.T) {
